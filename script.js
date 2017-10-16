@@ -25,8 +25,8 @@ var html = {};
 function setup() {
 	html.canvas = document.getElementById(canvasId);
 
-	html.canvas.width = String(canvasWidth) + "px";
-	html.canvas.height = String(canvasHeight) + "px";
+	html.canvas.setAttribute("width", String(canvasWidth) + "px");
+	html.canvas.setAttribute("height", String(canvasHeight) + "px");
 }
 
 ///////////////////////////////////////////
