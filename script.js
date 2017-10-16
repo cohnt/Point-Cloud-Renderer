@@ -20,7 +20,7 @@ var defaultViewVector = [1, 1, 1];
 var html = {};
 var pointCloud = [];
 var viewVector = [];
-var viewBasis = [[], [], []];
+var viewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var cameraLocation = [];
 var keys = {};
 var mouseButtons = {};
@@ -145,8 +145,13 @@ function mouseMoved(e) {
 	}
 
 	var delta = ma(mouseLocation, mNeg(oldMouseLocation));
-
-	console.log(delta);
+	console.log("Raw delta: " + delta);
+	var delta = mm(mInv3x3(viewBasis), delta);
+	console.log("Actual delta: " + delta);
+	console.log("");
+	console.log("");
+	console.log("");
+	console.log("");
 
 	for(var i=0; i<mouseLocation.length; ++i) {
 		oldMouseLocation[i] = mouseLocation[i];
@@ -190,11 +195,27 @@ function mm(a, b) {
 	if(a[0].length != b.length) {
 		return false;
 	}
+	if(b[0].length == undefined) {
+		var x = [];
+		for(var i=0; i<b.length; ++i) {
+			x.push([b[i]]);
+		}
+		b = x.slice(0);
+	}
+	if(a[0].length == undefined) {
+		var x = [];
+		for(var i=0; i<a.length; ++i) {
+			x.push([a[i]]);
+		}
+		a = x.slice(0);
+	}
 	var c = [];
 	for(var i=0; i<a.length; ++i) {
 		c.push([]);
-		for(var j=0; j<a[i].length; ++j) {
+		for(var j=0; j<b[0].length; ++j) {
+			c[i][j] = 0;
 			for(var k=0; k<a[i].length; ++k) {
+				console.log(a[i][k] + " " + b[k][j]);
 				c[i][j] += a[i][k]*b[k][j];
 			}
 		}
