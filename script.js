@@ -44,6 +44,15 @@ function setup() {
 	html.canvas.setAttribute("height", String(canvasHeight) + "px");
 
 	html.pcInputButton.addEventListener("click", newPointCloud);
+
+	document.addEventListener("keydown", function(event) { keydown(event); });
+	document.addEventListener("keyup", function(event) { keyup(event); });
+	document.addEventListener("mousemove", function(event) { mouseMoved(event); });
+	page.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
+	document.addEventListener("mouseup", function(event) { mouseup(event); });
+	page.canvas.addEventListener("wheel", function(event) { wheel(event); });
+	page.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
+	page.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -88,6 +97,38 @@ function newPointCloud() {
 	//Because the function returns if there's an error, this statement is only read if everything is valid.
 	//So you don't replace the current point cloud with a faulty one.
 	pointCloud = pc.slice(0);
+}
+function keydown(e) {
+	if(event.which == 81 && !keys[String(81)] && overCanvas) { //Q
+		viewRotation += -1*rotateDegreesPerTick;
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		updateGraphDisplay();
+	}
+	else if(event.which == 69 && !keys[String(69)] && overCanvas) { //E
+		viewRotation += rotateDegreesPerTick;
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		updateGraphDisplay();
+	}
+	keys[String(event.which)] = true;
+}
+function keyup(e) {
+	//
+	keys[String(event.which)] = false;
+}
+function mouseMoved(e) {
+
+}
+function mousedown(e) {
+
+}
+function mouseup(e) {
+
+}
+function mouseEnterCanvas(e) {
+
+}
+function mouseLeaveCanvas(e) {
+
 }
 
 ///////////////////////////////////////////
