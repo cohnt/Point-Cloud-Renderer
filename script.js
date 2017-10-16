@@ -22,6 +22,8 @@ var pointCloud = [];
 var viewVector = [];
 var viewBasis = [];
 var cameraLocation = [];
+var keys = {};
+var overCanvas = false;
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -45,6 +47,7 @@ function setup() {
 
 	html.pcInputButton.addEventListener("click", newPointCloud);
 
+	//Controls for moving and adjusting the "camera".
 	document.addEventListener("keydown", function(event) { keydown(event); });
 	document.addEventListener("keyup", function(event) { keyup(event); });
 	document.addEventListener("mousemove", function(event) { mouseMoved(event); });
@@ -111,6 +114,17 @@ function keydown(e) {
 	}
 	keys[String(event.which)] = true;
 }
+function rotatingCheckAgain() {
+	if(keys[String(81)] && overCanvas) {
+		viewRotation += -1*rotateDegreesPerTick;
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+	}
+	else if(keys[String(69)] && overCanvas) {
+		viewRotation += rotateDegreesPerTick;
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+	}
+	updateGraphDisplay();
+}
 function keyup(e) {
 	//
 	keys[String(event.which)] = false;
@@ -128,6 +142,9 @@ function mouseEnterCanvas(e) {
 
 }
 function mouseLeaveCanvas(e) {
+
+}
+function wheel(e) {
 
 }
 
