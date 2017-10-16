@@ -203,7 +203,7 @@ function ma(a, b) {
 }
 function mNeg(x) {
 	//Returns the negative of x.
-	var mX;
+	var mX = [];
 	for(var i=0; i<x.length; ++i) {
 		mX.push([]);
 		for(var j=0; j<x[i].length; ++j) {
