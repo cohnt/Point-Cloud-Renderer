@@ -12,6 +12,7 @@ var dragPanningConstant = 1/40; //This constant slows down the rate that draggin
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
 var mouseDeltasToKeep = 8; //How many of the last mouse movements to keep recorded for panning/rotating.
+var defaultViewVector = [1, 1, 1];
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -20,7 +21,7 @@ var mouseDeltasToKeep = 8; //How many of the last mouse movements to keep record
 var html = {};
 var pointCloud = [];
 var viewVector = [];
-var viewBasis = [];
+var viewBasis = [[], [], []];
 var cameraLocation = [];
 var keys = {};
 var overCanvas = false;
@@ -56,6 +57,9 @@ function setup() {
 	html.canvas.addEventListener("wheel", function(event) { wheel(event); });
 	html.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
 	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
+
+	viewVector = defaultViewVector.slice(0);
+	updateBasis();
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -103,24 +107,22 @@ function newPointCloud() {
 }
 function keydown(e) {
 	if(event.which == 81 && !keys[String(81)] && overCanvas) { //Q
-		viewRotation += -1*rotateDegreesPerTick;
+		rotateCamera(-1*rotateDegreesPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
-		updateGraphDisplay();
 	}
 	else if(event.which == 69 && !keys[String(69)] && overCanvas) { //E
-		viewRotation += rotateDegreesPerTick;
+		rotateCamera(rotateDegreesPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
-		updateGraphDisplay();
 	}
 	keys[String(event.which)] = true;
 }
 function rotatingCheckAgain() {
 	if(keys[String(81)] && overCanvas) {
-		viewRotation += -1*rotateDegreesPerTick;
+		rotateCamera(-1*rotateDegreesPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
 	}
 	else if(keys[String(69)] && overCanvas) {
-		viewRotation += rotateDegreesPerTick;
+		rotateCamera(rotateDegreesPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
 	}
 	updateGraphDisplay();
@@ -130,21 +132,31 @@ function keyup(e) {
 	keys[String(event.which)] = false;
 }
 function mouseMoved(e) {
-
+	//Needs to be rewritten.
 }
 function mousedown(e) {
-
+	//
+	mouseButtons[String(event.which)] = true;
 }
 function mouseup(e) {
-
+	//
+	mouseButtons[String(event.which)] = false;
 }
 function mouseEnterCanvas(e) {
-
+	//
+	overCanvas = true;
 }
 function mouseLeaveCanvas(e) {
-
+	//
+	overCanvas = false;
 }
 function wheel(e) {
+	//Needs to be rewritten.
+}
+function rotateCamera(deg) {
+
+}
+function updateBasis() {
 
 }
 
