@@ -133,8 +133,9 @@ function rotatingCheckAgain() {
 function mouseMoved(e) {
 	mouseLocation[0] = event.clientX;
 	mouseLocation[1] = event.clientY;
+	mouseLocation[2] = 0;
 
-	var delta = [0, 0, 0];
+	
 
 }
 function mousedown(e) {
@@ -199,6 +200,17 @@ function ma(a, b) {
 		}
 	}
 	return c;
+}
+function mNeg(x) {
+	//Returns the negative of x.
+	var mX;
+	for(var i=0; i<x.length; ++i) {
+		mX.push([]);
+		for(var j=0; j<x[i].length; ++j) {
+			mX[i][j] = -x[i][j];
+		}
+	}
+	return mX;
 }
 function mInv3x3(x) {
 	//Thanks again wikipedia! https://en.wikipedia.org/wiki/Invertible_matrix#Methods_of_matrix_inversion
