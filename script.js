@@ -152,10 +152,6 @@ function mouseMoved(e) {
 	console.log("");
 	console.log("");
 
-	for(var i=0; i<mouseLocation.length; ++i) {
-		oldMouseLocation[i] = mouseLocation[i];
-	}
-
 	currentlyPanning = mouseButtons["1"] && overCanvas;
 	currentlyRotating = keys["16"] && overCanvas;
 
@@ -164,6 +160,10 @@ function mouseMoved(e) {
 	}
 	else if(currentlyTilting) {
 		tiltedGraph(delta);
+	}
+
+	for(var i=0; i<mouseLocation.length; ++i) {
+		oldMouseLocation[i] = mouseLocation[i];
 	}
 }
 function mousedown(e) {
