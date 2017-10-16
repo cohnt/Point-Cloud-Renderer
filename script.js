@@ -48,11 +48,11 @@ function setup() {
 	document.addEventListener("keydown", function(event) { keydown(event); });
 	document.addEventListener("keyup", function(event) { keyup(event); });
 	document.addEventListener("mousemove", function(event) { mouseMoved(event); });
-	page.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
+	html.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
 	document.addEventListener("mouseup", function(event) { mouseup(event); });
-	page.canvas.addEventListener("wheel", function(event) { wheel(event); });
-	page.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
-	page.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
+	html.canvas.addEventListener("wheel", function(event) { wheel(event); });
+	html.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
+	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
