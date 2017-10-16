@@ -20,7 +20,7 @@ var html = {};
 var pointCloud = [];
 var viewVector = [];
 var viewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
-var cameraLocation = [];
+var cameraLocation = [0, 0, 0];
 var keys = {};
 var mouseButtons = {};
 var overCanvas = false;
@@ -175,7 +175,13 @@ function mouseLeaveCanvas(e) {
 	overCanvas = false;
 }
 function wheel(e) {
-	//Needs to be rewritten.
+	e.preventDefault();
+	e.returnValue = false;
+	var relativeDistanceVector = [0, 0, -e.deltaY/mouseWheelCalibrationConstant];
+	var basisDistanceVector = mm(mInv3x3(viewBasis), relativeDistanceVector);
+	cameraLocation = ma(cameraLocation, makeRowVector(basisDistanceVector));
+	cameraLocation = makeRowVector(cameraLocation);
+	console.log(cameraLocation);
 }
 function rotateCamera(deg) {
 	var rotationAxis = viewBasis[2].slice(0); //We rotate around the view axis, which is the third axis in the basis.
@@ -200,18 +206,10 @@ function mm(a, b) {
 		return false;
 	}
 	if(b[0].length == undefined) {
-		var x = [];
-		for(var i=0; i<b.length; ++i) {
-			x.push([b[i]]);
-		}
-		b = x.slice(0);
+		b = makeColVector(b);
 	}
 	if(a[0].length == undefined) {
-		var x = [];
-		for(var i=0; i<a.length; ++i) {
-			x.push([a[i]]);
-		}
-		a = x.slice(0);
+		a = makeColVector(a);
 	}
 	var c = [];
 	for(var i=0; i<a.length; ++i) {
@@ -230,19 +228,17 @@ function ma(a, b) {
 	if(!((a.length == b.length) && (a[0].length == b[0].length))) {
 		return false;
 	}
-	var c = [];
-	var rowVector = (a[0].length == undefined);
-	if(rowVector) {
-		for(var i=0; i<a.length; ++i) {
-			c[i] = a[i] + b[i];
-		}
+	if(a[0].length == undefined) {
+		a = makeColVector(a);
 	}
-	else {
-		for(var i=0; i<a.length; ++i) {
-			c.push([]);
-			for(var j=0; j<a[i].length; ++j) {
-				c[i][j] = a[i][j]+b[i][j];
-			}
+	if(b[0].length == undefined) {
+		b = makeColVector(b);
+	}
+	var c = [];
+	for(var i=0; i<a.length; ++i) {
+		c.push([]);
+		for(var j=0; j<a[i].length; ++j) {
+			c[i][j] = a[i][j]+b[i][j];
 		}
 	}
 	return c;
@@ -250,18 +246,13 @@ function ma(a, b) {
 function mNeg(x) {
 	//Returns the negative of x.
 	var mX = [];
-	var rowVector = (x[0].length == undefined);
-	if(rowVector) {
-		for(var i=0; i<x.length; ++i) {
-			mX[i] = -x[i];
-		}
+	if(x[0].length == undefined) {
+		x = makeColVector(x);
 	}
-	else {
-		for(var i=0; i<x.length; ++i) {
-			mX.push([]);
-			for(var j=0; j<x[i].length; ++j) {
-				mX[i][j] = -x[i][j];
-			}
+	for(var i=0; i<x.length; ++i) {
+		mX.push([]);
+		for(var j=0; j<x[i].length; ++j) {
+			mX[i][j] = -x[i][j];
 		}
 	}
 	return mX;
@@ -295,6 +286,20 @@ function mInv3x3(x) {
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
 function sq(x) { return x*x; }
+function makeRowVector(x) {
+	var y = [];
+	for(var i=0; i<x.length; ++i) {
+		y.push(x[i][0]);
+	}
+	return y;
+}
+function makeColVector(y) {
+	var x = [];
+	for(var i=0; i<y.length; ++i) {
+		x.push([y[i]]);
+	}
+	return x;
+}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
