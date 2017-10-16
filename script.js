@@ -154,23 +154,37 @@ function wheel(e) {
 	//Needs to be rewritten.
 }
 function rotateCamera(deg) {
-
+	var rotationAxis = viewBasis[2].slice(0); //We rotate around the view axis, which is the third axis in the basis.
+	var t = (Math.PI/180)*deg*-1; //The -1 multiplier accounts for the fact that the view axis is actually pointing towards us.
+	var ux = rotationAxis[0]; var uy = rotationAxis[1]; var uz = rotationAxis[2];
+	var rotationMatrix = [
+		[ cos(t)+(sq(ux)*(1-cos(t))), (ux*uy*(1-cos(t)))-(uz*sin(t)), (ux*uz*(1-cos(t)))+(uy*sin(t)) ],
+		[ (uy*ux*(1-cos(t)))+(uz*sin(t)), cos(t)+(sq(uy)*(1-cos(t))), (uy*uz*(1-cos(t)))-(ux*sin(t)) ],
+		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
+	]; //Many thanks to wikipedia: https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+	viewBasis = mm(rotationMatrix, viewBasis).slice(0);
 }
 function updateBasis() {
 
 }
-function multiplyMatrix3333(a, b) {
-	//Return c=a*b where a and b are 3x3 matrices.
+function mm(a, b) {
+	//Return c=a*b where a and b are matrices. If their dimensions mismatch, return false;
+	if(a[0].length != b.length) {
+		return false;
+	}
 	var c = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	for(var i=0; i<3; ++i) {
-		for(var j=0; j<3; ++j) {
-			for(var k=0; k<3; ++k) {
+	for(var i=0; i<a.length; ++i) {
+		for(var j=0; j<a[i].length; ++j) {
+			for(var k=0; k<a[i].length; ++k) {
 				c[i][j] += a[i][k]*b[k][j];
 			}
 		}
 	}
 	return c;
 }
+function sin(x) { return Math.sin(x); }
+function cos(x) { return Math.cos(x); }
+function sq(x) { return x*x; }
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
