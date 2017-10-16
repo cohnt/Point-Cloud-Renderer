@@ -159,6 +159,18 @@ function rotateCamera(deg) {
 function updateBasis() {
 
 }
+function multiplyMatrix3333(a, b) {
+	//Return c=a*b where a and b are 3x3 matrices.
+	var c = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	for(var i=0; i<3; ++i) {
+		for(var j=0; j<3; ++j) {
+			for(var k=0; k<3; ++k) {
+				c[i][j] += a[i][k]*b[k][j];
+			}
+		}
+	}
+	return c;
+}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
