@@ -4,11 +4,26 @@ body {
 p {
 	margin: 0px;
 	display: inline-block;
-	vertical-align: middle;
+}
+pre {
+	margin: 2px;
+	display: inline-block;
 }
 div {
 	display: inline-block;
 }
 canvas {
 	border: 1px dotted black;
+}
+
+div#userInfoPanel {
+	vertical-align: top;
+}
+textarea#pcInput {
+	width: 500px;
+	height: 200px;
+}
+div#pcInputButton {
+	padding: 10px 20px;
+	background-color: #ccccff;
 }
