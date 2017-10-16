@@ -23,7 +23,10 @@ var viewVector = [];
 var viewBasis = [[], [], []];
 var cameraLocation = [];
 var keys = {};
+var mouseButtons = {};
 var overCanvas = false;
+var mouseLocation = [];
+var oldMouseLocation = [];
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -132,11 +135,22 @@ function rotatingCheckAgain() {
 }
 function mouseMoved(e) {
 	mouseLocation[0] = event.clientX;
-	mouseLocation[1] = event.clientY;
+	mouseLocation[1] = -event.clientY; //y+ is down -_-
 	mouseLocation[2] = 0;
 
-	
+	if(oldMouseLocation.length == 0) {
+		for(var i=0; i<mouseLocation.length; ++i) {
+			oldMouseLocation[i] = mouseLocation[i];
+		}
+	}
 
+	var delta = ma(mouseLocation, mNeg(oldMouseLocation));
+
+	console.log(delta);
+
+	for(var i=0; i<mouseLocation.length; ++i) {
+		oldMouseLocation[i] = mouseLocation[i];
+	}
 }
 function mousedown(e) {
 	//
@@ -193,10 +207,18 @@ function ma(a, b) {
 		return false;
 	}
 	var c = [];
-	for(var i=0; i<a.length; ++i) {
-		c.push([]);
-		for(var j=0; j<a[i].length; ++j) {
-			c[i][j] = a[i][j]+b[i][j];
+	var rowVector = (a[0].length == undefined);
+	if(rowVector) {
+		for(var i=0; i<a.length; ++i) {
+			c[i] = a[i] + b[i];
+		}
+	}
+	else {
+		for(var i=0; i<a.length; ++i) {
+			c.push([]);
+			for(var j=0; j<a[i].length; ++j) {
+				c[i][j] = a[i][j]+b[i][j];
+			}
 		}
 	}
 	return c;
@@ -204,10 +226,18 @@ function ma(a, b) {
 function mNeg(x) {
 	//Returns the negative of x.
 	var mX = [];
-	for(var i=0; i<x.length; ++i) {
-		mX.push([]);
-		for(var j=0; j<x[i].length; ++j) {
-			mX[i][j] = -x[i][j];
+	var rowVector = (x[0].length == undefined);
+	if(rowVector) {
+		for(var i=0; i<x.length; ++i) {
+			mX[i] = -x[i];
+		}
+	}
+	else {
+		for(var i=0; i<x.length; ++i) {
+			mX.push([]);
+			for(var j=0; j<x[i].length; ++j) {
+				mX[i][j] = -x[i][j];
+			}
 		}
 	}
 	return mX;
