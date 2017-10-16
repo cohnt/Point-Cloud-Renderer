@@ -4,7 +4,6 @@
 
 var canvasWidth = 750;
 var canvasHeight = 750;
-var zoomPowerConstant = 1.1; //This is used when calculating the zoom factor when scrolling.
 var mouseWheelCalibrationConstant = 53; //This is the value given when the mouse is scrolled one notch.
 var axisColors = ["#ff0000", "#00cc00", "#0000ff"]; //The colors of the axes shown about global zero.
 var dragRotatingConstant = 1/100; //This constant slows down the rate that dragging rotates the graph.
@@ -116,6 +115,10 @@ function keydown(e) {
 	}
 	keys[String(event.which)] = true;
 }
+function keyup(e) {
+	//
+	keys[String(event.which)] = false;
+}
 function rotatingCheckAgain() {
 	if(keys[String(81)] && overCanvas) {
 		rotateCamera(-1*rotateDegreesPerTick);
@@ -127,12 +130,12 @@ function rotatingCheckAgain() {
 	}
 	updateGraphDisplay();
 }
-function keyup(e) {
-	//
-	keys[String(event.which)] = false;
-}
 function mouseMoved(e) {
-	//Needs to be rewritten.
+	mouseLocation[0] = event.clientX;
+	mouseLocation[1] = event.clientY;
+
+	var delta = [0, 0, 0];
+
 }
 function mousedown(e) {
 	//
@@ -172,8 +175,9 @@ function mm(a, b) {
 	if(a[0].length != b.length) {
 		return false;
 	}
-	var c = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	var c = [];
 	for(var i=0; i<a.length; ++i) {
+		c.push([]);
 		for(var j=0; j<a[i].length; ++j) {
 			for(var k=0; k<a[i].length; ++k) {
 				c[i][j] += a[i][k]*b[k][j];
@@ -181,6 +185,48 @@ function mm(a, b) {
 		}
 	}
 	return c;
+}
+function ma(a, b) {
+	//Return c=a+b where a and b are matrices. If their dimensions mismatch, return false;
+	if(!((a.length == b.length) && (a[0].length == b[0].length))) {
+		return false;
+	}
+	var c = [];
+	for(var i=0; i<a.length; ++i) {
+		c.push([]);
+		for(var j=0; j<a[i].length; ++j) {
+			c[i][j] = a[i][j]+b[i][j];
+		}
+	}
+	return c;
+}
+function mInv3x3(x) {
+	//Thanks again wikipedia! https://en.wikipedia.org/wiki/Invertible_matrix#Methods_of_matrix_inversion
+	//NOTE: This is only for 3x3 matrices.
+	//inv will be returned.
+	var inv = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	var a=x[0][0]; var b=x[0][1]; var c=x[0][2];
+	var d=x[1][0]; var e=x[1][1]; var f=x[1][2];
+	var g=x[2][0]; var h=x[2][1]; var i=x[2][2];
+
+	var A=(e*i-f*h); var D=(c*h-b*i); var G=(b*f-c*e);
+	var B=(f*g-d*i); var E=(a*i-c*g); var H=(c*d-a*f);
+	var C=(d*h-e*g); var F=(b*g-a*h); var I=(a*e-b*d);
+
+	var det = (a*e*i)+(b*f*g)+(c*d*h)-(c*e*g)-(b*d*i)-(a*f*h);
+	console.log(det);
+
+	inv[0][0] = A; inv[0][1] = D; inv[0][2] = G;
+	inv[1][0] = B; inv[1][1] = E; inv[1][2] = H;
+	inv[2][0] = C; inv[2][1] = F; inv[2][2] = I;
+
+	for(var i=0; i<3; ++i) {
+		for(var j=0; j<3; ++j) {
+			inv[i][j] = inv[i][j]/det;
+		}
+	}
+	return inv;
+
 }
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
