@@ -10,7 +10,6 @@ var dragRotatingConstant = 1/100; //This constant slows down the rate that dragg
 var dragPanningConstant = 1/40; //This constant slows down the rate that dragging pans the graph.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
-var mouseDeltasToKeep = 8; //How many of the last mouse movements to keep recorded for panning/rotating.
 var defaultViewVector = [1, 1, 1];
 
 ///////////////////////////////////////////
@@ -156,6 +155,16 @@ function mouseMoved(e) {
 	for(var i=0; i<mouseLocation.length; ++i) {
 		oldMouseLocation[i] = mouseLocation[i];
 	}
+
+	currentlyPanning = mouseButtons["1"] && overCanvas;
+	currentlyRotating = keys["16"] && overCanvas;
+
+	if(currentlyPanning) {
+		pannedGraph(delta);
+	}
+	else if(currentlyTilting) {
+		tiltedGraph(delta);
+	}
 }
 function mousedown(e) {
 	//
@@ -187,8 +196,11 @@ function rotateCamera(deg) {
 	]; //Many thanks to wikipedia: https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
 	viewBasis = mm(rotationMatrix, viewBasis).slice(0);
 }
-function updateBasis() {
-
+function pannedGraph(d) {
+	//Needs to be written.
+}
+function tiltedGraph(d) {
+	//Needs to be written.
 }
 function mm(a, b) {
 	//Return c=a*b where a and b are matrices. If their dimensions mismatch, return false;
@@ -289,11 +301,13 @@ function mInv3x3(x) {
 		}
 	}
 	return inv;
-
 }
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
 function sq(x) { return x*x; }
+function updateBasis() {
+	//Needs to be written.
+}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
