@@ -1,0 +1,14 @@
+body {
+	background-color: #eeeeee;
+}
+p {
+	margin: 0px;
+	display: inline-block;
+	vertical-align: middle;
+}
+div {
+	display: inline-block;
+}
+canvas {
+	border: 1px dotted black;
+}
