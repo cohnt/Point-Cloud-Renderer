@@ -10,7 +10,7 @@ var dragRotatingConstant = 1/100; //This constant slows down the rate that dragg
 var dragPanningConstant = 1/40; //This constant slows down the rate that dragging pans the graph.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
-var defaultViewVector = [1, 1, 1];
+var defaultViewVector = [0, 0, 1];
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -60,7 +60,6 @@ function setup() {
 	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
 
 	viewVector = defaultViewVector.slice(0);
-	updateBasis();
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -130,7 +129,6 @@ function rotatingCheckAgain() {
 		rotateCamera(rotateDegreesPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
 	}
-	updateGraphDisplay();
 }
 function mouseMoved(e) {
 	mouseLocation[0] = event.clientX;
@@ -144,16 +142,10 @@ function mouseMoved(e) {
 	}
 
 	var delta = ma(mouseLocation, mNeg(oldMouseLocation));
-	console.log("Raw delta: " + delta);
 	var delta = mm(mInv3x3(viewBasis), delta);
-	console.log("Actual delta: " + delta);
-	console.log("");
-	console.log("");
-	console.log("");
-	console.log("");
 
 	currentlyPanning = mouseButtons["1"] && overCanvas;
-	currentlyRotating = keys["16"] && overCanvas;
+	currentlyTilting = keys["16"] && overCanvas;
 
 	if(currentlyPanning) {
 		pannedGraph(delta);
@@ -227,7 +219,6 @@ function mm(a, b) {
 		for(var j=0; j<b[0].length; ++j) {
 			c[i][j] = 0;
 			for(var k=0; k<a[i].length; ++k) {
-				console.log(a[i][k] + " " + b[k][j]);
 				c[i][j] += a[i][k]*b[k][j];
 			}
 		}
@@ -289,7 +280,6 @@ function mInv3x3(x) {
 	var C=(d*h-e*g); var F=(b*g-a*h); var I=(a*e-b*d);
 
 	var det = (a*e*i)+(b*f*g)+(c*d*h)-(c*e*g)-(b*d*i)-(a*f*h);
-	console.log(det);
 
 	inv[0][0] = A; inv[0][1] = D; inv[0][2] = G;
 	inv[1][0] = B; inv[1][1] = E; inv[1][2] = H;
@@ -305,9 +295,6 @@ function mInv3x3(x) {
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
 function sq(x) { return x*x; }
-function updateBasis() {
-	//Needs to be written.
-}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
