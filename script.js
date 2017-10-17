@@ -6,7 +6,7 @@ var canvasWidth = 750;
 var canvasHeight = 750;
 var mouseWheelCalibrationConstant = 53; //This is the value given when the mouse is scrolled one notch.
 var axisColors = ["#ff0000", "#00cc00", "#0000ff"]; //The colors of the axes shown about global zero.
-var dragRotatingConstant = 1/100; //This constant slows down the rate that dragging rotates the graph.
+var dragRotatingConstant = 1/180; //This constant represents degrees rotated per pixel dragged.
 var dragPanningConstant = 1/40; //This constant slows down the rate that dragging pans the graph.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
@@ -20,7 +20,7 @@ var defaultCameraLocation = [0, 0, 1];
 
 var html = {};
 var pointCloud = [];
-var viewBasis = [[[1, 0, 0], [0, 1, 0], [0, 0, 1]];]
+var viewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var cameraLocation = [0, 0, 1];
 var keys = {};
 var mouseButtons = {};
@@ -144,14 +144,14 @@ function mouseMoved(e) {
 	}
 
 	var delta = ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation)));
-	delta = makeRowVector(mm(mInv3x3(viewBasis), delta));
-	//console.log(delta);
+	var basisDelta = makeRowVector(mm(mInv3x3(viewBasis), delta));
+	//console.log(basisDelta);
 
 	currentlyPanning = mouseButtons["1"] && overCanvas;
 	currentlyTilting = keys["16"] && overCanvas;
 
 	if(currentlyPanning) {
-		pannedGraph(delta);
+		pannedGraph(basisDelta);
 	}
 	else if(currentlyTilting) {
 		tiltedGraph(delta);
@@ -196,13 +196,45 @@ function rotateCamera(deg) {
 		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
 	]; //Many thanks to wikipedia: https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
 	viewBasis = mm(rotationMatrix, viewBasis).slice(0);
+	console.log("Location: " + cameraLocation);
+	console.log("Basis: " + viewBasis[0] + " " + viewBasis[1] + " " + viewBasis[2]);
 }
 function pannedGraph(d) {
 	cameraLocation = makeRowVector(ma(cameraLocation, makeRowVector(mScal(dragPanningConstant, d))));
-	console.log(cameraLocation);
+	console.log("Location: " + cameraLocation);
+	console.log("Basis: " + viewBasis[0] + " " + viewBasis[1] + " " + viewBasis[2]);
 }
 function tiltedGraph(d) {
-	//Needs to be written.
+	//This is a series of two rotations.
+	//First, rotate dx about the y-axis.
+	//Then, rotate dy about the x-axis.
+	var rotationAxis;
+	var t;
+	var ux, uy, uz;
+	var rotationMatrix1, rotationMatrix2;
+
+	//Rotation 1:
+	rotationAxis = viewBasis[1].slice(0); //About the y-axis.
+	t = d[0]*dragRotatingConstant;
+	ux = rotationAxis[0], uy = rotationAxis[1], uz = rotationAxis[2];
+	rotationMatrix1 = [
+		[ cos(t)+(sq(ux)*(1-cos(t))), (ux*uy*(1-cos(t)))-(uz*sin(t)), (ux*uz*(1-cos(t)))+(uy*sin(t)) ],
+		[ (uy*ux*(1-cos(t)))+(uz*sin(t)), cos(t)+(sq(uy)*(1-cos(t))), (uy*uz*(1-cos(t)))-(ux*sin(t)) ],
+		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
+	];
+
+	//Rotation 2:
+	rotationAxis = viewBasis[0].slice(0); //About the x-axis.
+	t = d[1]*dragRotatingConstant;
+	ux = rotationAxis[0], uy = rotationAxis[1], uz = rotationAxis[2];
+	rotationMatrix1 = [
+		[ cos(t)+(sq(ux)*(1-cos(t))), (ux*uy*(1-cos(t)))-(uz*sin(t)), (ux*uz*(1-cos(t)))+(uy*sin(t)) ],
+		[ (uy*ux*(1-cos(t)))+(uz*sin(t)), cos(t)+(sq(uy)*(1-cos(t))), (uy*uz*(1-cos(t)))-(ux*sin(t)) ],
+		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
+	];
+
+	console.log("Location: " + cameraLocation);
+	console.log("Basis: " + viewBasis[0] + " " + viewBasis[1] + " " + viewBasis[2]);
 }
 function mm(a, b) {
 	//Return c=a*b where a and b are matrices. If their dimensions mismatch, return false;
