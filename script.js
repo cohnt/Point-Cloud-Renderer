@@ -239,6 +239,9 @@ function tiltedGraph(d) {
 		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
 	];
 
+	viewBasis = mm(rotationMatrix1, viewBasis);
+	viewBasis = mm(rotationMatrix2, viewBasis);
+
 	console.log("Location: " + cameraLocation);
 	console.log("Basis: " + viewBasis[0] + " " + viewBasis[1] + " " + viewBasis[2]);
 }
@@ -382,7 +385,7 @@ function drawAxes() {
 	var z0 = projectPoint([0, 0, 0]);
 	var z1 = projectPoint([0, 0, axisDrawDistance]);
 	context.beginPath();
-	context.strokeStyle = axisColors[0];
+	context.strokeStyle = axisColors[2];
 	context.moveTo(z0[0], z0[1]);
 	context.lineTo(z1[0], z1[1]);
 	context.stroke();
