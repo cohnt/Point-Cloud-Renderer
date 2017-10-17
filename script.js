@@ -149,7 +149,7 @@ function mouseMoved(e) {
 		}
 	}
 
-	var delta = ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation)));
+	var delta = makeRowVector(ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation))));
 	var basisDelta = makeRowVector(mm(mInv3x3(viewBasis), delta));
 	//console.log(basisDelta);
 
@@ -233,7 +233,7 @@ function tiltedGraph(d) {
 	rotationAxis = viewBasis[0].slice(0); //About the x-axis.
 	t = d[1]*dragRotatingConstant;
 	ux = rotationAxis[0], uy = rotationAxis[1], uz = rotationAxis[2];
-	rotationMatrix1 = [
+	rotationMatrix2 = [
 		[ cos(t)+(sq(ux)*(1-cos(t))), (ux*uy*(1-cos(t)))-(uz*sin(t)), (ux*uz*(1-cos(t)))+(uy*sin(t)) ],
 		[ (uy*ux*(1-cos(t)))+(uz*sin(t)), cos(t)+(sq(uy)*(1-cos(t))), (uy*uz*(1-cos(t)))-(ux*sin(t)) ],
 		[ (uz*ux*(1-cos(t)))-(uy*sin(t)), (uz*uy*(1-cos(t)))+(ux*sin(t)), cos(t)+(sq(uz)*(1-cos(t))) ]
