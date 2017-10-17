@@ -7,11 +7,12 @@ var canvasHeight = 750;
 var mouseWheelCalibrationConstant = 53; //This is the value given when the mouse is scrolled one notch.
 var axisColors = ["#ff0000", "#00cc00", "#0000ff"]; //The colors of the axes shown about global zero.
 var dragRotatingConstant = 1/180; //This constant represents degrees rotated per pixel dragged.
-var dragPanningConstant = 1/40; //This constant slows down the rate that dragging pans the graph.
+var dragPanningConstant = 1; //This constant slows down the rate that dragging pans the graph.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
 var defaultViewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var defaultCameraLocation = [0, 0, 1];
+var axisDrawDistance = 10; //In meters, this is gonna be changed later.
 
 
 ///////////////////////////////////////////
@@ -136,7 +137,7 @@ function rotatingCheckAgain() {
 	}
 }
 function mouseMoved(e) {
-	mouseLocation[0] = event.clientX;
+	mouseLocation[0] = -event.clientX; //We're dragging the graph, not the camera.
 	mouseLocation[1] = -event.clientY; //y+ is down -_-
 	mouseLocation[2] = 0;
 
@@ -359,10 +360,29 @@ function dot(a, b) {
 function drawAxes() {
 	//x-axis
 	var x0 = projectPoint([0, 0, 0]);
-	var x1 = projectPoint([10, 0, 0]);
+	var x1 = projectPoint([axisDrawDistance, 0, 0]);
 	context.beginPath();
+	context.strokeStyle = axisColors[0];
 	context.moveTo(x0[0], x0[1]);
 	context.lineTo(x1[0], x1[1]);
+	context.stroke();
+
+	//y-axis
+	var y0 = projectPoint([0, 0, 0]);
+	var y1 = projectPoint([0, axisDrawDistance, 0]);
+	context.beginPath();
+	context.strokeStyle = axisColors[1];
+	context.moveTo(y0[0], y0[1]);
+	context.lineTo(y1[0], y1[1]);
+	context.stroke();
+
+	//z-axis
+	var z0 = projectPoint([0, 0, 0]);
+	var z1 = projectPoint([0, 0, axisDrawDistance]);
+	context.beginPath();
+	context.strokeStyle = axisColors[0];
+	context.moveTo(z0[0], z0[1]);
+	context.lineTo(z1[0], z1[1]);
 	context.stroke();
 }
 function projectPoint(p) {
