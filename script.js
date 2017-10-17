@@ -10,7 +10,9 @@ var dragRotatingConstant = 1/100; //This constant slows down the rate that dragg
 var dragPanningConstant = 1/40; //This constant slows down the rate that dragging pans the graph.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
-var defaultViewVector = [0, 0, 1];
+var defaultViewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+var defaultCameraLocation = [0, 0, 1];
+
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -18,9 +20,8 @@ var defaultViewVector = [0, 0, 1];
 
 var html = {};
 var pointCloud = [];
-var viewVector = [];
-var viewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
-var cameraLocation = [0, 0, 0];
+var viewBasis = [[[1, 0, 0], [0, 1, 0], [0, 0, 1]];]
+var cameraLocation = [0, 0, 1];
 var keys = {};
 var mouseButtons = {};
 var overCanvas = false;
@@ -59,7 +60,8 @@ function setup() {
 	html.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
 	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
 
-	viewVector = defaultViewVector.slice(0);
+	viewBasis = defaultViewBasis.slice(0);
+	cameraLocation = defaultCameraLocation.slice(0);
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -292,6 +294,7 @@ function mInv3x3(x) {
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
 function sq(x) { return x*x; }
+function sqrt(x) { return Math.sqrt(x); }
 function makeRowVector(x) {
 	var y = [];
 	for(var i=0; i<x.length; ++i) {
