@@ -141,8 +141,9 @@ function mouseMoved(e) {
 		}
 	}
 
-	var delta = ma(mouseLocation, mNeg(oldMouseLocation));
-	var delta = mm(mInv3x3(viewBasis), delta);
+	var delta = ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation)));
+	delta = makeRowVector(mm(mInv3x3(viewBasis), delta));
+	//console.log(delta);
 
 	currentlyPanning = mouseButtons["1"] && overCanvas;
 	currentlyTilting = keys["16"] && overCanvas;
@@ -195,7 +196,8 @@ function rotateCamera(deg) {
 	viewBasis = mm(rotationMatrix, viewBasis).slice(0);
 }
 function pannedGraph(d) {
-	//Needs to be written.
+	cameraLocation = makeRowVector(ma(cameraLocation, makeRowVector(mScal(dragPanningConstant, d))));
+	console.log(cameraLocation);
 }
 function tiltedGraph(d) {
 	//Needs to be written.
@@ -245,6 +247,10 @@ function ma(a, b) {
 }
 function mNeg(x) {
 	//Returns the negative of x.
+	return mScal(-1, x);
+}
+function mScal(s, x) {
+	//Returns s*x
 	var mX = [];
 	if(x[0].length == undefined) {
 		x = makeColVector(x);
@@ -252,7 +258,7 @@ function mNeg(x) {
 	for(var i=0; i<x.length; ++i) {
 		mX.push([]);
 		for(var j=0; j<x[i].length; ++j) {
-			mX[i][j] = -x[i][j];
+			mX[i][j] = s*x[i][j];
 		}
 	}
 	return mX;
