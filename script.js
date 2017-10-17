@@ -66,6 +66,8 @@ function setup() {
 	cameraLocation = defaultCameraLocation.slice(0);
 
 	context = html.canvas.getContext("2d");
+	context.transform(1, 0, 0, 1, html.canvas.width/2, html.canvas.height/2);
+	context.transform(1, 0, 0, -1, 0, 0);
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -138,7 +140,7 @@ function rotatingCheckAgain() {
 }
 function mouseMoved(e) {
 	mouseLocation[0] = -event.clientX; //We're dragging the graph, not the camera.
-	mouseLocation[1] = -event.clientY; //y+ is down -_-
+	mouseLocation[1] = event.clientY;
 	mouseLocation[2] = 0;
 
 	if(oldMouseLocation.length == 0) {
