@@ -12,7 +12,7 @@ var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate bu
 var rotateDegreesPerTick = 1.5; //How many degrees the view rotates per tick.
 var defaultViewBasis = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var defaultCameraLocation = [0, 0, 1];
-var axisDrawDistance = 10; //In meters, this is gonna be changed later.
+var axisDrawDistance = 50; //In meters, this is gonna be changed later.
 
 
 ///////////////////////////////////////////
@@ -390,6 +390,12 @@ function drawAxes() {
 function projectPoint(p) {
 	var relativePoint = makeRowVector(ma(p, makeRowVector(mNeg(cameraLocation))));
 	return [compUV(viewBasis[0], relativePoint), compUV(viewBasis[1], relativePoint), 0];
+}
+function clearAndResetCanvas() {
+	context.setTransform(1, 0, 0, 1, 0, 0);
+	context.clearRect(0, 0, html.canvas.width, html.canvas.height);
+	context.transform(1, 0, 0, 1, html.canvas.width/2, html.canvas.height/2);
+	context.transform(1, 0, 0, -1, 0, 0);
 }
 
 ///////////////////////////////////////////
