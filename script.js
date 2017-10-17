@@ -151,7 +151,6 @@ function mouseMoved(e) {
 
 	var delta = makeRowVector(ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation))));
 	var basisDelta = makeRowVector(mm(mInv3x3(viewBasis), delta));
-	//console.log(basisDelta);
 
 	currentlyPanning = mouseButtons["1"] && overCanvas;
 	currentlyTilting = keys["16"] && overCanvas;
@@ -160,7 +159,7 @@ function mouseMoved(e) {
 		pannedGraph(basisDelta);
 	}
 	else if(currentlyTilting) {
-		tiltedGraph(delta);
+		tiltedGraph(basisDelta);
 	}
 
 	for(var i=0; i<mouseLocation.length; ++i) {
@@ -221,7 +220,7 @@ function tiltedGraph(d) {
 
 	//Rotation 1:
 	rotationAxis = viewBasis[1].slice(0); //About the y-axis.
-	t = d[0]*dragRotatingConstant;
+	t = d[0]*dragRotatingConstant * -1;
 	ux = rotationAxis[0], uy = rotationAxis[1], uz = rotationAxis[2];
 	rotationMatrix1 = [
 		[ cos(t)+(sq(ux)*(1-cos(t))), (ux*uy*(1-cos(t)))-(uz*sin(t)), (ux*uz*(1-cos(t)))+(uy*sin(t)) ],
