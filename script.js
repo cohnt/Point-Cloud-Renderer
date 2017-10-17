@@ -27,6 +27,7 @@ var mouseButtons = {};
 var overCanvas = false;
 var mouseLocation = [];
 var oldMouseLocation = [];
+var context;
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -62,6 +63,8 @@ function setup() {
 
 	viewBasis = defaultViewBasis.slice(0);
 	cameraLocation = defaultCameraLocation.slice(0);
+
+	context = html.canvas.getContext("2d");
 }
 function newPointCloud() {
 	//Get and preprocess the raw input.
@@ -340,6 +343,31 @@ function makeColVector(y) {
 		x.push([y[i]]);
 	}
 	return x;
+}
+function compUV(u, v) {
+	//The component projection of v onto u
+	//https://en.wikipedia.org/wiki/Scalar_projection
+	return dot(u, v)/Math.sqrt(dot(u, u));
+}
+function dot(a, b) {
+	var total = 0;
+	for(var i=0; i<a.length; ++i) {
+		total += a[i]*b[i];
+	}
+	return total;
+}
+function drawAxes() {
+	//x-axis
+	var x0 = projectPoint([0, 0, 0]);
+	var x1 = projectPoint([10, 0, 0]);
+	context.beginPath();
+	context.moveTo(x0[0], x0[1]);
+	context.lineTo(x1[0], x1[1]);
+	context.stroke();
+}
+function projectPoint(p) {
+	var relativePoint = makeRowVector(ma(p, makeRowVector(mNeg(cameraLocation))));
+	return [compUV(viewBasis[0], relativePoint), compUV(viewBasis[1], relativePoint), 0];
 }
 
 ///////////////////////////////////////////
