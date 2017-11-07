@@ -31,7 +31,7 @@ var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
-var pointCloud; //The point cloud being displayed.
+var pointCloud = []; //The point cloud being displayed.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -288,6 +288,7 @@ function reloadDisplay() {
 	clearScreen();
 	zoomTransformation();
 	drawAxes();
+	drawPointCloud();
 	updateTransformationDisplay();
 }
 function zoomTransformation() {
@@ -346,6 +347,7 @@ function newPC() {
 		}
 	}
 	pointCloud = homogenizePointCloud(tempSpace);
+	reloadDisplay();
 }
 function homogenizePointCloud(rawPC) {
 	var cloud = [];
@@ -358,6 +360,12 @@ function homogenizePointCloud(rawPC) {
 		]);
 	}
 	return cloud;
+}
+function drawPointCloud() {
+	for(var i=0; i<pointCloud.length; ++i) {
+		var point = projectToScreen(pointCloud[i]);
+		drawPoint(point);
+	}
 }
 
 ///////////////////////////////////////////
