@@ -9,7 +9,9 @@ var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
 var axisColors = ["#dd0000", "#dd9999", "#00dd00", "#99dd99", "#0000dd", "#9999dd"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
 var axisLength = 100; //In pixels.
-var defaultLineColor = "#000000";
+var defaultLineColor = "#000000"; //Pretty self-explanatory, right?
+var rotateRadiansPerTick = (Math.PI*2)*(1/2)*(25/1000); //How many degrees the view rotates per tick.
+var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -18,6 +20,9 @@ var defaultLineColor = "#000000";
 var html = {}; //An object containing every html element on the page.
 var context; //The to-be-created 2D canvas context.
 var currentTransform; //The current matrix transformation to map a point in the 3D real space to the camera perspective.
+var keys = {}; //The current status of any keys that have been pressed during the session. Undefined or false implies the key is not being pressed right now.
+var mouseButtons = {}; //The current status of any mouse buttons that have been pressed during the session. Undefined or false implies the button is not being pressed right now.
+var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -38,6 +43,11 @@ function setup() {
 			html.currentTransform[i].push(document.getElementById("r"+i+"c"+j)); //Matrix element in row i, column j has id ricj.
 		}
 	}
+
+	document.addEventListener("keydown", function(event) { keydown(event); });
+	document.addEventListener("keyup", function(event) { keyup(event); });
+	html.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
+	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
 
 	//The raw output of getAttribute is "####px", so we need to shave off the px and parse to a number.
 	canvasDimensions[0] = Number(html.canvas.getAttribute("width").slice(0,-2));
@@ -143,6 +153,92 @@ function rotate(axis, t) {
 	           [(uz*ux*(1-c))-(uy*s), (uz*uy*(1-c))+(ux*s),        c+(uz2*(1-c)), 0],
 	           [                   0,                    0,                    0, 1]];
 	currentTransform = mm(mat, currentTransform);
+}
+function keydown(event) {
+	if(event.which == 81 && !keys[String(81)] && overCanvas) { //Q
+		rotate([[0], [0], [1]], rotateRadiansPerTick);
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		reloadDisplay();
+	}
+	else if(event.which == 69 && !keys[String(69)] && overCanvas) { //E
+		rotate([[0], [0], [1]], -1*rotateRadiansPerTick);
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		reloadDisplay();
+	}
+	keys[String(event.which)] = true;
+}
+function keyup(event) {
+	//
+	keys[String(event.which)] = false;
+}
+function rotatingCheckAgain() {
+	if(keys[String(81)] && overCanvas) {
+		rotate([[0], [0], [1]], rotateRadiansPerTick);
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		reloadDisplay();
+	}
+	else if(keys[String(69)] && overCanvas) {
+		rotate([[0], [0], [1]], -1*rotateRadiansPerTick);
+		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		reloadDisplay();
+	}
+}
+// function mouseMoved(e) {
+// 	mouseLocation[0] = -event.clientX; //We're dragging the graph, not the camera.
+// 	mouseLocation[1] = event.clientY;
+// 	mouseLocation[2] = 0;
+
+// 	if(oldMouseLocation.length == 0) {
+// 		for(var i=0; i<mouseLocation.length; ++i) {
+// 			oldMouseLocation[i] = mouseLocation[i];
+// 		}
+// 	}
+
+// 	var delta = makeRowVector(ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation))));
+// 	var basisDelta = makeRowVector(mm(mInv3x3(viewBasis), delta));
+
+// 	currentlyPanning = mouseButtons["1"] && overCanvas;
+// 	currentlyTilting = keys["16"] && overCanvas;
+
+// 	if(currentlyPanning) {
+// 		pannedGraph(basisDelta);
+// 	}
+// 	else if(currentlyTilting) {
+// 		tiltedGraph(basisDelta);
+// 	}
+
+// 	for(var i=0; i<mouseLocation.length; ++i) {
+// 		oldMouseLocation[i] = mouseLocation[i];
+// 	}
+// }
+// function mousedown(e) {
+// 	//
+// 	mouseButtons[String(event.which)] = true;
+// }
+// function mouseup(e) {
+// 	//
+// 	mouseButtons[String(event.which)] = false;
+// }
+function mouseEnterCanvas(e) {
+	//
+	overCanvas = true;
+}
+function mouseLeaveCanvas(e) {
+	//
+	overCanvas = false;
+}
+// function wheel(e) {
+// 	e.preventDefault();
+// 	e.returnValue = false;
+// 	var relativeDistanceVector = [0, 0, -e.deltaY/mouseWheelCalibrationConstant];
+// 	var basisDistanceVector = mm(mInv3x3(viewBasis), relativeDistanceVector);
+// 	cameraLocation = ma(cameraLocation, makeRowVector(basisDistanceVector));
+// 	cameraLocation = makeRowVector(cameraLocation);
+// 	console.log(cameraLocation);
+// }
+function reloadDisplay() {
+	clearScreen();
+	drawAxes();
 }
 
 ///////////////////////////////////////////
