@@ -8,7 +8,7 @@
 /// GLOBAL VARIABLES
 ///////////////////////////////////////////
 
-
+var html = {}; //An object containing every html element on the page.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -21,7 +21,14 @@
 ///////////////////////////////////////////
 
 function setup() {
-	//
+	html.canvas = document.getElementById("screen");
+	html.currentTransform = [];
+	for(var i=0; i<4; ++i) {
+		html.currentTransform.push([]);
+		for(var j=0; j<4; ++j) {
+			html.currentTransform[i].push(document.getElementById("r"+i+"c"+j));
+		}
+	}
 }
 
 ///////////////////////////////////////////
