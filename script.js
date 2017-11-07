@@ -51,12 +51,18 @@ function loadDefaults() {
 	currentTransform = defaultTransformMatrix.slice();
 }
 function drawLine(a, b) {
-	//a and b are 4x1 row vectors, representing homogeneous coordinates in real space
+	//a and b are 4x1 column vectors, representing homogeneous coordinates in the real basis.
 	var a1, b1;
 
 }
 function drawPoint(a) {
 	//
+}
+function projectToScreen(x) {
+	//x is a 4x1 column vector representing a homogeneous coordinate in the real basis.
+	var x1; //x1 is a 4x1 column vector representing a homogeneous coordinate in the camera basis.
+	x1 = mm(currentTransform, x);
+	return x1;
 }
 function mm(a, b) {
 	//Multiplies a*b where a and b are matrices.
