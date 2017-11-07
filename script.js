@@ -4,7 +4,7 @@
 
 var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 1, 0, 0],
-                              [0, 0, 1, -10],
+                              [0, 0, 1, -50],
                               [0, 0, 0, 1]];
 var axisColors = ["#dd0000", "#dd9999", "#00dd00", "#99dd99", "#0000dd", "#9999dd"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
@@ -363,8 +363,7 @@ function homogenizePointCloud(rawPC) {
 }
 function drawPointCloud() {
 	for(var i=0; i<pointCloud.length; ++i) {
-		var point = projectToScreen(pointCloud[i]);
-		drawPoint(point);
+		drawPoint(pointCloud[i]);
 	}
 }
 
