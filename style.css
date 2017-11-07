@@ -1,0 +1,10 @@
+body {
+	background-color: #eeeeee;
+}
+div {
+	display: inline-block;
+}
+canvas {
+	border: 1px dotted black;
+	background-color: #dddddd;
+}
