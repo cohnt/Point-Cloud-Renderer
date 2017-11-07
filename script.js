@@ -23,6 +23,8 @@ var currentTransform; //The current matrix transformation to map a point in the 
 var keys = {}; //The current status of any keys that have been pressed during the session. Undefined or false implies the key is not being pressed right now.
 var mouseButtons = {}; //The current status of any mouse buttons that have been pressed during the session. Undefined or false implies the button is not being pressed right now.
 var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
+var mouseLocation = [0, 0]; //Current mouse location (x,y).
+var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -48,6 +50,9 @@ function setup() {
 	document.addEventListener("keyup", function(event) { keyup(event); });
 	html.canvas.addEventListener("mouseenter", function(event) { mouseEnterCanvas(event); });
 	html.canvas.addEventListener("mouseleave", function(event) { mouseLeaveCanvas(event); });
+	document.addEventListener("mousemove", function(event) { mouseMoved(event); });
+	html.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
+	document.addEventListener("mouseup", function(event) { mouseup(event); });
 
 	//The raw output of getAttribute is "####px", so we need to shave off the px and parse to a number.
 	canvasDimensions[0] = Number(html.canvas.getAttribute("width").slice(0,-2));
@@ -183,42 +188,42 @@ function rotatingCheckAgain() {
 		reloadDisplay();
 	}
 }
-// function mouseMoved(e) {
-// 	mouseLocation[0] = -event.clientX; //We're dragging the graph, not the camera.
-// 	mouseLocation[1] = event.clientY;
-// 	mouseLocation[2] = 0;
+function mouseMoved(event) {
+	mouseLocation[0] = event.clientX;
+	mouseLocation[1] = event.clientY;
 
-// 	if(oldMouseLocation.length == 0) {
-// 		for(var i=0; i<mouseLocation.length; ++i) {
-// 			oldMouseLocation[i] = mouseLocation[i];
-// 		}
-// 	}
+	if(oldMouseLocation.length == 0) {
+		for(var i=0; i<mouseLocation.length; ++i) {
+			oldMouseLocation[i] = mouseLocation[i];
+		}
+	}
 
-// 	var delta = makeRowVector(ma(mouseLocation, makeRowVector(mNeg(oldMouseLocation))));
-// 	var basisDelta = makeRowVector(mm(mInv3x3(viewBasis), delta));
+	var delta = [mouseLocation[0]-oldMouseLocation[0], mouseLocation[1]-oldMouseLocation[1]];
+	//console.log(delta);
 
-// 	currentlyPanning = mouseButtons["1"] && overCanvas;
-// 	currentlyTilting = keys["16"] && overCanvas;
+	currentlyPanning = mouseButtons["1"] && overCanvas;
+	currentlyTilting = keys["16"] && overCanvas;
 
-// 	if(currentlyPanning) {
-// 		pannedGraph(basisDelta);
-// 	}
-// 	else if(currentlyTilting) {
-// 		tiltedGraph(basisDelta);
-// 	}
+	if(currentlyPanning) {
+		translate([[delta[0]], [-1*delta[1]], [0], [1]]);
+		reloadDisplay();
+	}
+	else if(currentlyTilting) {
+		//
+	}
 
-// 	for(var i=0; i<mouseLocation.length; ++i) {
-// 		oldMouseLocation[i] = mouseLocation[i];
-// 	}
-// }
-// function mousedown(e) {
-// 	//
-// 	mouseButtons[String(event.which)] = true;
-// }
-// function mouseup(e) {
-// 	//
-// 	mouseButtons[String(event.which)] = false;
-// }
+	for(var i=0; i<mouseLocation.length; ++i) {
+		oldMouseLocation[i] = mouseLocation[i];
+	}
+}
+function mousedown(e) {
+	//
+	mouseButtons[String(event.which)] = true;
+}
+function mouseup(e) {
+	//
+	mouseButtons[String(event.which)] = false;
+}
 function mouseEnterCanvas(e) {
 	//
 	overCanvas = true;
