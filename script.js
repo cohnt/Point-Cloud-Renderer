@@ -8,6 +8,7 @@ var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 0, 0, 1]];
 var axisColors = ["#ff0000", "#00ff00", "#0000ff"]; //The colors of the x, y, and z axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
+var axisLength = 100; //In pixels.
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -54,11 +55,12 @@ function drawPoint(a) {
 	//a is a 4x1 column vector, representing a homogeneous coordinate in the real basis.
 	var a1 = projectToScreen(a);
 	if(a1[2] < 0) { //If the point is in front of the camera
-		             //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
-		context.fillRect(a1[0], a1[1], 1, 1);
+		            //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
+		context.fillRect(a1[0], a1[1], 1, 1); //Draw a "pixel" by drawing a 1x1 rectangle.
+		                                      //For some reason, this is the fastest way to do it with canvas.
 	}
 	else {
-		console.log(a1);
+		console.log(a1[0] + " " + a1[1] + " " + a1[2] + " " + a1[3]); //Print out the coordinate if it isn't drawn.
 	}
 }
 function projectToScreen(x) {
@@ -81,6 +83,15 @@ function mm(a, b) {
 		}
 	}
 	return x;
+}
+function drawAxes() {
+	var O = [[0], [0], [0], [1]];
+	var xP = [[axisLength], [0], [0], [1]];
+	var xN = [[-axisLength], [0], [0], [1]];
+	var yP = [[0], [axisLength], [0], [1]];
+	var yN = [[0], [-axisLength], [0], [1]];
+	var zP = [[0], [0], [axisLength], [1]];
+	var zN = [[0], [0], [-axisLength], [1]];
 }
 
 ///////////////////////////////////////////
