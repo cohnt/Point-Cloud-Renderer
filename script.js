@@ -44,7 +44,7 @@ function setup() {
 	canvasDimensions[1] = Number(html.canvas.getAttribute("height").slice(0,-2));
 
 	context = html.canvas.getContext("2d"); //Create a 2D context.
-	defaultTransformations();
+	metaTransformations();
 
 	loadDefaults();
 	drawAxes();
@@ -115,9 +115,9 @@ function drawAxes() {
 function clearScreen() {
 	context.setTransform(1, 0, 0, 1, 0, 0);
 	context.clearRect(0, 0, canvasDimensions[0], canvasDimensions[1]);
-	defaultTransformations();
+	metaTransformations();
 }
-function defaultTransformations() {
+function metaTransformations() {
 	context.transform(1, 0, 0, 1, canvasDimensions[0]/2, canvasDimensions[1]/2); //Put the origin in the center of the canvas.
 	context.transform(1, 0, 0, -1, 0, 0); //Flip it so y+ is up.
 }
