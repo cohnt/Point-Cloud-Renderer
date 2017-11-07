@@ -48,8 +48,10 @@ function setup() {
 	context.transform(1, 0, 0, -1, 0, 0); //Flip it so y+ is up.
 
 	loadDefaults();
+	drawAxes();
 }
 function loadDefaults() {
+	//
 	currentTransform = defaultTransformMatrix.slice();
 }
 function drawPoint(a) {
@@ -110,6 +112,14 @@ function drawAxes() {
 		context.stroke();
 	}
 	context.strokeStyle = defaultLineColor;
+}
+function translate(delta) {
+	//delta is a 4x1 column vector representing the translation.
+	var mat = [[1, 0, 0, delta[0]],
+	           [0, 1, 0, delta[1]],
+	           [0, 0, 1, delta[2]],
+	           [0, 0, 0, delta[3]]]; //delta[3]=1
+	currentTransform = mm(mat, currentTransform);
 }
 
 ///////////////////////////////////////////
