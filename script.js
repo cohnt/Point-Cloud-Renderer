@@ -178,12 +178,12 @@ function keydown(event) {
 		reloadDisplay();
 	}
 	else if(event.which == 87 && !keys[String(87)] && overCanvas) { //W
-		translate([[0], [0], [-1*translatePerTick], [1]]);
+		translate([[0], [0], [translatePerTick], [1]]);
 		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
 		reloadDisplay();
 	}
 	else if(event.which == 83 && !keys[String(83)] && overCanvas) { //S
-		translate([[0], [0], [translatePerTick], [1]]);
+		translate([[0], [0], [-1*translatePerTick], [1]]);
 		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
 		reloadDisplay();
 	}
@@ -207,12 +207,12 @@ function rotatingCheckAgain() {
 }
 function forwardBackwardCheckAgain() {
 	if(keys[String(87)] && overCanvas) { //W
-		translate([[0], [0], [-1*translatePerTick], [1]]);
+		translate([[0], [0], [translatePerTick], [1]]);
 		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
 		reloadDisplay();
 	}
 	else if(keys[String(83)] && overCanvas) { //S
-		translate([[0], [0], [translatePerTick], [1]]);
+		translate([[0], [0], [-1*translatePerTick], [1]]);
 		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
 		reloadDisplay();
 	}
