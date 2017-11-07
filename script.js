@@ -12,8 +12,10 @@ var axisLength = 100; //In pixels.
 var defaultLineColor = "#000000"; //Pretty self-explanatory, right?
 var rotateRadiansPerTick = (Math.PI*2)*(1/2)*(25/1000); //How many degrees the view rotates per tick.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
+var translateCheckButtonSpeed = 25; //How often the program checks if the translate button is still pressed, in milliseconds.
 var mouseWheelCalibrationConstant = 53; //The delta value of one "notch" on my personal mouse.
-var zoomStep = 1.1;
+var zoomStep = 1.1; //The factor by which it zooms for each discrete mousemove value.
+var translatePerTick = 1; //The amount of translation for each tick.
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -174,6 +176,16 @@ function keydown(event) {
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
 		reloadDisplay();
 	}
+	else if(event.which == 87 && !keys[String(87)] && overCanvas) { //W
+		translate([[0], [0], [-1*translatePerTick], [1]]);
+		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
+		reloadDisplay();
+	}
+	else if(event.which == 83 && !keys[String(83)] && overCanvas) { //S
+		translate([[0], [0], [translatePerTick], [1]]);
+		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
+		reloadDisplay();
+	}
 	keys[String(event.which)] = true;
 }
 function keyup(event) {
@@ -189,6 +201,18 @@ function rotatingCheckAgain() {
 	else if(keys[String(69)] && overCanvas) {
 		rotate([[0], [0], [1]], -1*rotateRadiansPerTick);
 		window.setTimeout(rotatingCheckAgain, rotateCheckButtonSpeed);
+		reloadDisplay();
+	}
+}
+function forwardBackwardCheckAgain() {
+	if(keys[String(87)] && overCanvas) { //W
+		translate([[0], [0], [-1*translatePerTick], [1]]);
+		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
+		reloadDisplay();
+	}
+	else if(keys[String(83)] && overCanvas) { //S
+		translate([[0], [0], [translatePerTick], [1]]);
+		window.setTimeout(forwardBackwardCheckAgain, translateCheckButtonSpeed);
 		reloadDisplay();
 	}
 }
