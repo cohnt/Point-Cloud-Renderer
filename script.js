@@ -33,6 +33,7 @@ var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
 var pointCloud = []; //The point cloud being displayed.
+var last5FrameTime = []; //The last 5 frame render times, in ms.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -57,6 +58,7 @@ function setup() {
 	html.load = document.getElementById("newPC");
 	html.pointsRendered = document.getElementById("pointsRendered");
 	html.frameTime = document.getElementById("frameTime");
+	html.frameTime5Avg = document.getElementById("frameTime5Avg");
 
 	document.addEventListener("keydown", function(event) { keydown(event); });
 	document.addEventListener("keyup", function(event) { keyup(event); });
@@ -380,6 +382,16 @@ function drawPointCloud() {
 	var dt = t1-t0;
 	html.frameTime.innerHTML = dt;
 	html.pointsRendered.innerHTML = i;
+	last5FrameTime.push(dt);
+
+	if(last5FrameTime.length > 5) {
+		last5FrameTime.splice(0, 1);
+	}
+	var sum = 0;
+	for(var i=0; i<last5FrameTime.length; ++i) {
+		sum += last5FrameTime[i];
+	}
+	html.frameTime5Avg.innerHTML = String(sum/last5FrameTime.length);
 }
 function cubeExample(increment) {
 	//Just an example point cloud.
