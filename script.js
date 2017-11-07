@@ -50,10 +50,6 @@ function setup() {
 function loadDefaults() {
 	currentTransform = defaultTransformMatrix.slice();
 }
-function drawLine(a, b) {
-	//a and b are 4x1 column vectors, representing homogeneous coordinates in the real basis.
-	var a1, b1;
-}
 function drawPoint(a) {
 	//a is a 4x1 column vector, representing a homogeneous coordinate in the real basis.
 	var a1 = projectToScreen(a);
