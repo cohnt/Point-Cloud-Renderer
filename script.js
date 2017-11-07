@@ -50,8 +50,28 @@ function setup() {
 function loadDefaults() {
 	currentTransform = defaultTransformMatrix.slice();
 }
-function drawAxes() {
+function drawLine(a, b) {
+	//a and b are 4x1 row vectors, representing homogeneous coordinates in real space
+	var a1, b1;
 
+}
+function drawPoint(a) {
+	//
+}
+function mm(a, b) {
+	//Multiplies a*b where a and b are matrices.
+	var x = [];
+	for(var i=0; i<a.length; ++i) {
+		x.push([]);
+		for(var j=0; j<b[0].length; ++j) {
+			var val = 0;
+			for(var k=0; k<b.length; ++k) {
+				val += a[i][k]*b[k][j];
+			}
+			x[i].push(val);
+		}
+	}
+	return x;
 }
 
 ///////////////////////////////////////////
