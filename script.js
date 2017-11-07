@@ -17,6 +17,7 @@ var mouseWheelCalibrationConstant = 53; //The delta value of one "notch" on my p
 var zoomStep = Math.pow(10, (1/10)); //The factor by which it zooms for each discrete mousemove value.
 var translatePerTick = 1; //The amount of translation for each tick.
 var tiltRadiansPerPixel = Math.PI/256; //How many radians to rotate for each pixel when tilting.
+var pointDisplaySize = 2; //In pixels.
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -84,7 +85,7 @@ function drawPoint(a) {
 	var a1 = projectToScreen(a);
 	if(a1[2] < 0) { //If the point is in front of the camera
 		            //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
-		context.fillRect(a1[0], a1[1], 1, 1); //Draw a "pixel" by drawing a 1x1 rectangle.
+		context.fillRect(a1[0]-(pointDisplaySize/2), a1[1]-(pointDisplaySize/2), pointDisplaySize, pointDisplaySize); //Draw a "pixel" by drawing a 1x1 rectangle.
 		                                      //For some reason, this is the fastest way to do it with canvas.
 	}
 	else {
