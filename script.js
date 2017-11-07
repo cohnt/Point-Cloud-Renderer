@@ -6,9 +6,10 @@ var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 1, 0, 0],
                               [0, 0, 1, -10],
                               [0, 0, 0, 1]];
-var axisColors = ["#ff0000", "#00ff00", "#0000ff"]; //The colors of the x, y, and z axes (respectively).
+var axisColors = ["#ff0000", "#ffaaaa", "#00ff00", "#aaffaa", "#0000ff", "#aaaaff"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
 var axisLength = 100; //In pixels.
+var defaultLineColor = "#000000";
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -63,6 +64,14 @@ function drawPoint(a) {
 		console.log(a1[0] + " " + a1[1] + " " + a1[2] + " " + a1[3]); //Print out the coordinate if it isn't drawn.
 	}
 }
+function drawLine(a, b) {
+	//Don't use this function in general, since it doesn't check if the points are in front of or behind the camera yet.
+	//Once that's implemented, go for it!
+	var a1 = projectToScreen(a);
+	var b1 = projectToScreen(b);
+	context.moveTo(a1[0], a1[1]);
+	context.lineTo(b1[0], b1[1]);
+}
 function projectToScreen(x) {
 	//x is a 4x1 column vector representing a homogeneous coordinate in the real basis.
 	var x1; //x1 is a 4x1 column vector representing a homogeneous coordinate in the camera basis.
@@ -92,6 +101,15 @@ function drawAxes() {
 	var yN = [[0], [-axisLength], [0], [1]];
 	var zP = [[0], [0], [axisLength], [1]];
 	var zN = [[0], [0], [-axisLength], [1]];
+
+	var order = [xP, xN, yP, yN, zP, zN];
+	for(var i=0; i<order.length; ++i) {
+		context.beginPath();
+		context.strokeStyle = axisColors[i];
+		drawLine(O, order[i]);
+		context.stroke();
+	}
+	context.strokeStyle = defaultLineColor;
 }
 
 ///////////////////////////////////////////
