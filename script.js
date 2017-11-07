@@ -16,6 +16,7 @@ var translateCheckButtonSpeed = 25; //How often the program checks if the transl
 var mouseWheelCalibrationConstant = 53; //The delta value of one "notch" on my personal mouse.
 var zoomStep = 1.1; //The factor by which it zooms for each discrete mousemove value.
 var translatePerTick = 1; //The amount of translation for each tick.
+var tiltRadiansPerPixel = Math.PI/256; //How many radians to rotate for each pixel when tilting.
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -237,7 +238,9 @@ function mouseMoved(event) {
 		reloadDisplay();
 	}
 	else if(currentlyTilting) {
-		//
+		rotate([[0], [1], [0]], delta[0]*tiltRadiansPerPixel);
+		rotate([[1], [0], [0]], delta[1]*tiltRadiansPerPixel);
+		reloadDisplay();
 	}
 
 	for(var i=0; i<mouseLocation.length; ++i) {
