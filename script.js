@@ -69,7 +69,7 @@ function setup() {
 	metaTransformations();
 
 	loadDefaults();
-	drawAxes();
+	reloadDisplay();
 }
 function loadDefaults() {
 	//
@@ -284,9 +284,18 @@ function reloadDisplay() {
 	clearScreen();
 	zoomTransformation();
 	drawAxes();
+	updateTransformationDisplay();
 }
 function zoomTransformation() {
 	context.transform(zoom, 0, 0, zoom, 0, 0);
+	//That's all there is, really.
+}
+function updateTransformationDisplay() {
+	for(var i=0; i<4; ++i) {
+		for(var j=0; j<4; ++j) {
+			html.currentTransform[i][j].innerHTML = currentTransform[i][j];
+		}
+	}
 }
 
 ///////////////////////////////////////////
