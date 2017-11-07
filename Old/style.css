@@ -1,0 +1,44 @@
+body {
+	background-color: #eeeeee;
+}
+p {
+	margin: 0px;
+	display: inline-block;
+}
+pre {
+	margin: 2px;
+	display: inline-block;
+}
+div {
+	display: inline-block;
+}
+canvas {
+	border: 1px dotted black;
+	background-color: #dddddd;
+}
+
+div#userInfoPanel {
+	vertical-align: top;
+}
+textarea#pcInput {
+	width: 500px;
+	height: 200px;
+}
+div#pcInputButton {
+	padding: 10px 20px;
+	background-color: #ccccff;
+}
+div#start {
+	width:80px;
+	padding: 9px 0px;
+	margin: 0px 2px;
+	background-color: #99ff99;
+	text-align: center;
+}
+div#stop {
+	width:80px;
+	padding: 9px 0px;
+	margin: 0px 2px;
+	background-color: #ffaaaa;
+	text-align: center;
+}
