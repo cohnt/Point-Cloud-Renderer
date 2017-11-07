@@ -12,6 +12,8 @@ var axisLength = 100; //In pixels.
 var defaultLineColor = "#000000"; //Pretty self-explanatory, right?
 var rotateRadiansPerTick = (Math.PI*2)*(1/2)*(25/1000); //How many degrees the view rotates per tick.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
+var mouseWheelCalibrationConstant = 53; //The delta value of one "notch" on my personal mouse.
+var zoomStep = 1.1;
 
 ///////////////////////////////////////////
 /// GLOBAL VARIABLES
@@ -25,6 +27,7 @@ var mouseButtons = {}; //The current status of any mouse buttons that have been 
 var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
+var zoom = 1; //Zoom represents frame of view.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -53,6 +56,7 @@ function setup() {
 	document.addEventListener("mousemove", function(event) { mouseMoved(event); });
 	html.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
 	document.addEventListener("mouseup", function(event) { mouseup(event); });
+	document.addEventListener("wheel", function(event) { wheel(event); });
 
 	//The raw output of getAttribute is "####px", so we need to shave off the px and parse to a number.
 	canvasDimensions[0] = Number(html.canvas.getAttribute("width").slice(0,-2));
@@ -232,18 +236,30 @@ function mouseLeaveCanvas(e) {
 	//
 	overCanvas = false;
 }
-// function wheel(e) {
-// 	e.preventDefault();
-// 	e.returnValue = false;
-// 	var relativeDistanceVector = [0, 0, -e.deltaY/mouseWheelCalibrationConstant];
-// 	var basisDistanceVector = mm(mInv3x3(viewBasis), relativeDistanceVector);
-// 	cameraLocation = ma(cameraLocation, makeRowVector(basisDistanceVector));
-// 	cameraLocation = makeRowVector(cameraLocation);
-// 	console.log(cameraLocation);
-// }
+function wheel(e) {
+	e.preventDefault();
+	e.returnValue = false;
+	console.log(e.deltaY);
+	var val;
+	if(e.deltaY > 0) {
+		val = 1/((e.deltaY/mouseWheelCalibrationConstant)*zoomStep);
+	}
+	else if(e.deltaY < 0) {
+		val = (-e.deltaY/mouseWheelCalibrationConstant)*zoomStep;
+	}
+	else {
+		return;
+	}
+	zoom *= val;
+	reloadDisplay();
+}
 function reloadDisplay() {
 	clearScreen();
+	zoomTransformation();
 	drawAxes();
+}
+function zoomTransformation() {
+	context.transform(zoom, 0, 0, zoom, 0, 0);
 }
 
 ///////////////////////////////////////////
