@@ -4,7 +4,7 @@
 
 var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 1, 0, 0],
-                              [0, 0, 1, -50],
+                              [0, 0, 1, -200],
                               [0, 0, 0, 1]];
 var axisColors = ["#dd0000", "#dd9999", "#00dd00", "#99dd99", "#0000dd", "#9999dd"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
@@ -55,6 +55,8 @@ function setup() {
 	}
 	html.pcTextArea = document.getElementById("pointCloud");
 	html.load = document.getElementById("newPC");
+	html.pointsRendered = document.getElementById("pointsRendered");
+	html.frameTime = document.getElementById("frameTime");
 
 	document.addEventListener("keydown", function(event) { keydown(event); });
 	document.addEventListener("keyup", function(event) { keyup(event); });
@@ -83,14 +85,12 @@ function loadDefaults() {
 function drawPoint(a) {
 	//a is a 4x1 column vector, representing a homogeneous coordinate in the real basis.
 	var a1 = projectToScreen(a);
-	if(a1[2] < 0) { //If the point is in front of the camera
+	//if(a1[2] < 0) { //If the point is in front of the camera
 		            //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
 		context.fillRect(a1[0]-(pointDisplaySize/2), a1[1]-(pointDisplaySize/2), pointDisplaySize, pointDisplaySize); //Draw a "pixel" by drawing a 1x1 rectangle.
 		                                      //For some reason, this is the fastest way to do it with canvas.
-	}
-	else {
-		console.log(a1[0] + " " + a1[1] + " " + a1[2] + " " + a1[3]); //Print out the coordinate if it isn't drawn.
-	}
+	//} //It's not actually clear how well this actually works -- there's some confusion with how the camera is working.
+	//Something to sort out later.
 }
 function drawLine(a, b) {
 	//Don't use this function in general, since it doesn't check if the points are in front of or behind the camera yet.
@@ -371,9 +371,28 @@ function homogenizePointCloud(rawPC) {
 	return cloud;
 }
 function drawPointCloud() {
-	for(var i=0; i<pointCloud.length; ++i) {
+	var t0 = window.performance.now();
+	var i;
+	for(i=0; i<pointCloud.length; ++i) {
 		drawPoint(pointCloud[i]);
 	}
+	var t1 = window.performance.now();
+	var dt = t1-t0;
+	html.frameTime.innerHTML = dt;
+	html.pointsRendered.innerHTML = i;
+}
+function cubeExample(increment) {
+	//Just an example point cloud.
+	pointCloud = [];
+	for(var i=0; i<100; i+=increment) {
+		for(var j=0; j<100; j+=increment) {
+			for(var k=0; k<100; k+=increment) {
+				pointCloud.push([[i], [j], [k], [1]]);
+			}
+		}
+	}
+	console.log("Drawing " + pointCloud.length + " points.");
+	reloadDisplay();
 }
 
 ///////////////////////////////////////////
