@@ -14,7 +14,7 @@ var rotateRadiansPerTick = (Math.PI*2)*(1/2)*(25/1000); //How many degrees the v
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var translateCheckButtonSpeed = 25; //How often the program checks if the translate button is still pressed, in milliseconds.
 var mouseWheelCalibrationConstant = 53; //The delta value of one "notch" on my personal mouse.
-var zoomStep = 1.1; //The factor by which it zooms for each discrete mousemove value.
+var zoomStep = Math.pow(10, (1/10)); //The factor by which it zooms for each discrete mousemove value.
 var translatePerTick = 1; //The amount of translation for each tick.
 var tiltRadiansPerPixel = Math.PI/256; //How many radians to rotate for each pixel when tilting.
 
@@ -232,6 +232,9 @@ function mouseMoved(event) {
 	}
 
 	var delta = [mouseLocation[0]-oldMouseLocation[0], mouseLocation[1]-oldMouseLocation[1]];
+	for(var i=0; i<delta.length; ++i) {
+		delta[i]/zoom;
+	}
 	//console.log(delta);
 
 	currentlyPanning = mouseButtons["1"] && overCanvas;
