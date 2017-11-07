@@ -4,7 +4,7 @@
 
 var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 1, 0, 0],
-                              [0, 0, 1, 0],
+                              [0, 0, 1, -10],
                               [0, 0, 0, 1]];
 var axisColors = ["#ff0000", "#00ff00", "#0000ff"]; //The colors of the x, y, and z axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
@@ -53,10 +53,17 @@ function loadDefaults() {
 function drawLine(a, b) {
 	//a and b are 4x1 column vectors, representing homogeneous coordinates in the real basis.
 	var a1, b1;
-
 }
 function drawPoint(a) {
-	//
+	//a is a 4x1 column vector, representing a homogeneous coordinate in the real basis.
+	var a1 = projectToScreen(a);
+	if(a1[2] < 0) { //If the point is in front of the camera
+		             //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
+		context.fillRect(a1[0], a1[1], 1, 1);
+	}
+	else {
+		console.log(a1);
+	}
 }
 function projectToScreen(x) {
 	//x is a 4x1 column vector representing a homogeneous coordinate in the real basis.
