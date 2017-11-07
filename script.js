@@ -31,6 +31,7 @@ var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
+var pointCloud; //The point cloud being displayed.
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -344,7 +345,19 @@ function newPC() {
 			tempSpace[point].push(num);
 		}
 	}
-	return tempSpace;
+	pointCloud = homogenizePointCloud(tempSpace);
+}
+function homogenizePointCloud(rawPC) {
+	var cloud = [];
+	for(var i=0; i<rawPC.length; ++i) {
+		cloud.push([
+			[rawPC[i][0]],
+			[rawPC[i][1]],
+			[rawPC[i][2]],
+			[1]
+		]);
+	}
+	return cloud;
 }
 
 ///////////////////////////////////////////
