@@ -285,18 +285,23 @@ function wheel(e) {
 		return;
 	}
 	zoom *= val;
+	zoomTransformation(val)
 	reloadDisplay();
 }
 function reloadDisplay() {
 	clearScreen();
-	zoomTransformation();
 	drawAxes();
 	drawPointCloud();
 	updateTransformationDisplay();
 }
-function zoomTransformation() {
-	context.transform(zoom, 0, 0, zoom, 0, 0);
-	//That's all there is, really.
+function zoomTransformation(z) {
+	var zoomMatrix = [
+		[z, 0, 0, 0],
+		[0, z, 0, 0],
+		[0, 0, z, 0],
+		[0, 0, 0, 1]
+	];
+	currentTransform = mm(zoomMatrix, currentTransform);
 }
 function updateTransformationDisplay() {
 	for(var i=0; i<4; ++i) {
