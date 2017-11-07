@@ -6,7 +6,7 @@ var defaultTransformMatrix = [[1, 0, 0, 0], //The default transformation matrix.
                               [0, 1, 0, 0],
                               [0, 0, 1, -10],
                               [0, 0, 0, 1]];
-var axisColors = ["#ff0000", "#ffaaaa", "#00ff00", "#aaffaa", "#0000ff", "#aaaaff"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
+var axisColors = ["#dd0000", "#dd9999", "#00dd00", "#99dd99", "#0000dd", "#9999dd"]; //The colors of the x+, x-, y+, y-, z+, and z- axes (respectively).
 var canvasDimensions = [null, null]; //Populated in setup()
 var axisLength = 100; //In pixels.
 var defaultLineColor = "#000000";
