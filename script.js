@@ -130,6 +130,20 @@ function translate(delta) {
 	           [0, 0, 0, delta[3]]]; //delta[3]=1
 	currentTransform = mm(mat, currentTransform);
 }
+function rotate(axis, t) {
+	//Rotate t radians about axis
+	//CAUTION! axis should be a 3x1 (column) unit vector
+	var ux = axis[0][0]; var ux2 = Math.pow(ux, 2);
+	var uy = axis[1][0]; var uy2 = Math.pow(uy, 2);
+	var uz = axis[2][0]; var uz2 = Math.pow(uz, 2);
+	var c = Math.cos(t);
+	var s = Math.sin(t);
+	var mat = [[       c+(ux2*(1-c)), (ux*uy*(1-c))-(uz*s), (ux*uz*(1-c))+(uy*s), 0],
+	           [(uy*ux*(1-c))+(uz*s),        c+(uy2*(1-c)), (uy*uz*(1-c))-(ux*s), 0],
+	           [(uz*ux*(1-c))-(uy*s), (uz*uy*(1-c))+(ux*s),        c+(uz2*(1-c)), 0],
+	           [                   0,                    0,                    0, 1]];
+	currentTransform = mm(mat, currentTransform);
+}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
