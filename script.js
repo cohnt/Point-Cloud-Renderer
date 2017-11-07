@@ -51,6 +51,8 @@ function setup() {
 			html.currentTransform[i].push(document.getElementById("r"+i+"c"+j)); //Matrix element in row i, column j has id ricj.
 		}
 	}
+	html.pcTextArea = document.getElementById("pointCloud");
+	html.load = document.getElementById("newPC");
 
 	document.addEventListener("keydown", function(event) { keydown(event); });
 	document.addEventListener("keyup", function(event) { keyup(event); });
@@ -60,6 +62,7 @@ function setup() {
 	html.canvas.addEventListener("mousedown", function(event) { mousedown(event); });
 	document.addEventListener("mouseup", function(event) { mouseup(event); });
 	document.addEventListener("wheel", function(event) { wheel(event); });
+	html.load.addEventListener("click", newPC);
 
 	//The raw output of getAttribute is "####px", so we need to shave off the px and parse to a number.
 	canvasDimensions[0] = Number(html.canvas.getAttribute("width").slice(0,-2));
@@ -296,6 +299,52 @@ function updateTransformationDisplay() {
 			html.currentTransform[i][j].innerHTML = currentTransform[i][j];
 		}
 	}
+}
+function newPC() {
+	var tempSpace = [[]];
+	var rawString = html.pcTextArea.value;
+	var point = 0;
+	while(rawString.length > 0) {
+		var num = NaN;
+		if(rawString[0] == "-") {
+			if(isNaN(Number(rawString[1]))) {
+				rawString = rawString.slice(0+2);
+			}
+			else if(!isNaN(Number(rawString[0]))) {
+				var i=2;
+				while(!isNaN(Number(rawString[i]))) {
+					++i;
+				}
+				--i;
+				num = Number(rawStrings.slice(0, i+1));
+				rawString = rawString.slice(i+1);
+			}
+		}
+		else if(rawString[0] == " ") {
+			//Number(" ") evaluates to 0. WTF????
+			rawString = rawString.slice(0+1);
+		}
+		else if(isNaN(Number(rawString[0]))) {
+			rawString = rawString.slice(0+1);
+		}
+		else if(!isNaN(Number(rawString[0]))) {
+			var i = 1;
+			while(!isNaN(Number(rawString[i]))) {
+				++i;
+			}
+			--i;
+			num = Number(rawString.slice(0, i+1));
+			rawString = rawString.slice(i+1);
+		}
+		if(!isNaN(num)) {
+			if(tempSpace[point].length >= 3) {
+				++point;
+				tempSpace.push([]);
+			}
+			tempSpace[point].push(num);
+		}
+	}
+	return tempSpace;
 }
 
 ///////////////////////////////////////////
