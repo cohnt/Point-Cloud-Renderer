@@ -8,3 +8,8 @@ canvas {
 	border: 1px dotted black;
 	background-color: #dddddd;
 }
+
+div#newPC {
+	padding: 10px 20px;
+	background-color: #aaaaff;
+}
