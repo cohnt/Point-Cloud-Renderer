@@ -44,8 +44,7 @@ function setup() {
 	canvasDimensions[1] = Number(html.canvas.getAttribute("height").slice(0,-2));
 
 	context = html.canvas.getContext("2d"); //Create a 2D context.
-	context.transform(1, 0, 0, 1, canvasDimensions[0]/2, canvasDimensions[1]/2); //Put the origin in the center of the canvas.
-	context.transform(1, 0, 0, -1, 0, 0); //Flip it so y+ is up.
+	defaultTransformations();
 
 	loadDefaults();
 	drawAxes();
@@ -113,8 +112,18 @@ function drawAxes() {
 	}
 	context.strokeStyle = defaultLineColor;
 }
+function clearScreen() {
+	context.setTransform(1, 0, 0, 1, 0, 0);
+	context.clearRect(0, 0, canvasDimensions[0], canvasDimensions[1]);
+	defaultTransformations();
+}
+function defaultTransformations() {
+	context.transform(1, 0, 0, 1, canvasDimensions[0]/2, canvasDimensions[1]/2); //Put the origin in the center of the canvas.
+	context.transform(1, 0, 0, -1, 0, 0); //Flip it so y+ is up.
+}
 function translate(delta) {
 	//delta is a 4x1 column vector representing the translation.
+	//Not sure if it needs to be in terms of real or camera basis.
 	var mat = [[1, 0, 0, delta[0]],
 	           [0, 1, 0, delta[1]],
 	           [0, 0, 1, delta[2]],
