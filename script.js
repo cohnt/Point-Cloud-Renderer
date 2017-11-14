@@ -10,6 +10,7 @@ var axisColors = ["#dd0000", "#dd9999", "#00dd00", "#99dd99", "#0000dd", "#9999d
 var canvasDimensions = [null, null]; //Populated in setup()
 var axisLength = 100; //In pixels.
 var defaultLineColor = "#000000"; //Pretty self-explanatory, right?
+var fillDefault = "#000000"; //Default point color
 var rotateRadiansPerTick = (Math.PI*2)*(1/2)*(25/1000); //How many degrees the view rotates per tick.
 var rotateCheckButtonSpeed = 25; //How often the program checks if the rotate button is still pressed, in milliseconds.
 var translateCheckButtonSpeed = 25; //How often the program checks if the translate button is still pressed, in milliseconds.
@@ -32,14 +33,17 @@ var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
-var pointCloud = []; //The point cloud being displayed.
+var pointCloud = new rgbPointCloud([], []); //The point cloud being displayed.
 var last5FrameTime = []; //The last 5 frame render times, in ms.
 
 ///////////////////////////////////////////
 /// CLASSES
 ///////////////////////////////////////////
 
-
+function rgbPointCloud(pointsArray, colorsArray) {
+	this.coords = pointsArray;
+	this.colors = colorsArray;
+}
 
 ///////////////////////////////////////////
 /// FUNCTIONS
@@ -84,15 +88,17 @@ function loadDefaults() {
 	//
 	currentTransform = defaultTransformMatrix.slice();
 }
-function drawPoint(a) {
+function drawPoint(a, color) {
 	//a is a 4x1 column vector, representing a homogeneous coordinate in the real basis.
 	var a1 = projectToScreen(a);
+	context.fillStyle = color;
 	//if(a1[2] < 0) { //If the point is in front of the camera
 		            //Recall that with the right-hand-rule, the positive z-axis is pointing towards you.
 		context.fillRect(a1[0]-(pointDisplaySize/2), a1[1]-(pointDisplaySize/2), pointDisplaySize, pointDisplaySize); //Draw a "pixel" by drawing a 1x1 rectangle.
 		                                      //For some reason, this is the fastest way to do it with canvas.
 	//} //It's not actually clear how well this actually works -- there's some confusion with how the camera is working.
 	//Something to sort out later.
+	context.fillStyle = fillDefault;
 }
 function drawLine(a, b) {
 	//Don't use this function in general, since it doesn't check if the points are in front of or behind the camera yet.
@@ -375,8 +381,8 @@ function homogenizePointCloud(rawPC) {
 function drawPointCloud() {
 	var t0 = window.performance.now();
 	var i;
-	for(i=0; i<pointCloud.length; ++i) {
-		drawPoint(pointCloud[i]);
+	for(i=0; i<pointCloud.coords.length; ++i) {
+		drawPoint(pointCloud.coords[i], pointCloud.colors[i]);
 	}
 	var t1 = window.performance.now();
 	var dt = t1-t0;
@@ -393,17 +399,24 @@ function drawPointCloud() {
 	}
 	html.frameTime5Avg.innerHTML = String(sum/last5FrameTime.length);
 }
-function cubeExample(increment) {
-	//Just an example point cloud.
-	pointCloud = [];
-	for(var i=0; i<100; i+=increment) {
-		for(var j=0; j<100; j+=increment) {
-			for(var k=0; k<100; k+=increment) {
-				pointCloud.push([[i], [j], [k], [1]]);
+function colorCubeExample() {
+	var points = [];
+	var colors = [];
+	var r, g, b, colorString;
+	for(var i=0; i<256; i+=8) {
+		for(var j=0; j<256; j+=8) {
+			for(var k=0; k<256; k+=8) {
+				points.push([[i], [j], [k], [1]]);
+				r = i.toString(16); r = ("0" + r).slice(-2);
+				g = j.toString(16); g = ("0" + g).slice(-2);
+				b = k.toString(16); b = ("0" + b).slice(-2);
+				colorString = "#" + r + g + b;
+				colors.push(colorString);
 			}
 		}
 	}
-	console.log("Drawing " + pointCloud.length + " points.");
+	pointCloud = new rgbPointCloud(points, colors);
+	console.log("Drawing " + points.length + " points.");
 	reloadDisplay();
 }
 
