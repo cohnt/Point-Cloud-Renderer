@@ -35,6 +35,7 @@ var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
 var pointCloud = new rgbPointCloud([], []); //The point cloud being displayed.
 var last5FrameTime = []; //The last 5 frame render times, in ms.
+var ws;
 
 ///////////////////////////////////////////
 /// CLASSES
@@ -418,6 +419,22 @@ function colorCubeExample() {
 	pointCloud = new rgbPointCloud(points, colors);
 	console.log("Drawing " + points.length + " points.");
 	reloadDisplay();
+}
+function commLinkSetup() {
+	ws = new WebSocket("ws://127.0.0.1:9002");
+	ws.onopen = function() {
+		//
+	}
+	ws.onmessage = function(event) {
+		var msg = event.data;
+		console.log(msg);
+		if(msg == "test") {
+			colorCubeExample();
+		}
+	}
+	ws.onclose = function() {
+		//
+	}
 }
 
 ///////////////////////////////////////////
