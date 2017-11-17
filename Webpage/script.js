@@ -300,7 +300,9 @@ function wheel(e) {
 function reloadDisplay() {
 	clearScreen();
 	drawAxes();
-	drawPointCloud(0);
+	for(var i=0; i<pointClouds.length; ++i) {
+		drawPointCloud(i);
+	}
 	updateTransformationDisplay();
 }
 function zoomTransformation(z) {
@@ -429,6 +431,7 @@ function commLinkSetup() {
 		var msg = event.data;
 		console.log(msg);
 		parsePointCloudMessage(msg);
+		ws.send("We want mooooooooooooooooore data!");
 	}
 	ws.onclose = function() {
 		//
@@ -466,6 +469,7 @@ function parsePointCloudMessage(msg) {
 		colorArray.push(color);
 	}
 	pointClouds.push(new rgbPointCloud(pc, colorArray));
+	reloadDisplay();
 }
 function randomColor() {
 	var r = Math.floor(Math.random()*256).toString(16); r = ("0" + r).slice(-2);
