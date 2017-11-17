@@ -443,7 +443,10 @@ function parsePointCloudMessage(msg) {
 	var data = div.slice(1);
 	var currentPoint = [[0], [0], [0], [1]];
 	var pc = [];
-	if(header == 2) {
+	if(header == 0) {
+		return;
+	}
+	else if(header == 2) {
 		for(var i=0; i<data.length; i+=2) {
 			pc.push([
 				[data[i]],
