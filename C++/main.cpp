@@ -1,5 +1,5 @@
 //To compile, use
-//g++ main.cpp -o server -std=c++11 -lboost_system -lpthread
+//g++ main.cpp -o server.exe -std=c++11 -lboost_system -lpthread
 
 #include <cstdlib>
 #include <thread>

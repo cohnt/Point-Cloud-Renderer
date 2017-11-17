@@ -33,7 +33,7 @@ var overCanvas = false; //Whether or not the mouse pointer is over the canvas.
 var mouseLocation = [0, 0]; //Current mouse location (x,y).
 var oldMouseLocation = [0, 0]; //Old mouse location (x,y).
 var zoom = 1; //Zoom represents frame of view.
-var pointCloud = new rgbPointCloud([], []); //The point cloud being displayed.
+var pointClouds = []; //An array containing each point cloud.
 var last5FrameTime = []; //The last 5 frame render times, in ms.
 var ws;
 
@@ -83,7 +83,6 @@ function setup() {
 	metaTransformations();
 
 	loadDefaults();
-	reloadDisplay();
 }
 function loadDefaults() {
 	//
@@ -301,7 +300,7 @@ function wheel(e) {
 function reloadDisplay() {
 	clearScreen();
 	drawAxes();
-	drawPointCloud();
+	drawPointCloud(0);
 	updateTransformationDisplay();
 }
 function zoomTransformation(z) {
@@ -379,11 +378,11 @@ function homogenizePointCloud(rawPC) {
 	}
 	return cloud;
 }
-function drawPointCloud() {
+function drawPointCloud(index) {
 	var t0 = window.performance.now();
 	var i;
-	for(i=0; i<pointCloud.coords.length; ++i) {
-		drawPoint(pointCloud.coords[i], pointCloud.colors[i]);
+	for(i=0; i<pointClouds[index].coords.length; ++i) {
+		drawPoint(pointClouds[index].coords[i], pointClouds[index].colors[i]);
 	}
 	var t1 = window.performance.now();
 	var dt = t1-t0;
@@ -416,7 +415,8 @@ function colorCubeExample() {
 			}
 		}
 	}
-	pointCloud = new rgbPointCloud(points, colors);
+	var pointCloud = new rgbPointCloud(points, colors);
+	pointClouds.push(pointCloud);
 	console.log("Drawing " + points.length + " points.");
 	reloadDisplay();
 }
@@ -428,13 +428,51 @@ function commLinkSetup() {
 	ws.onmessage = function(event) {
 		var msg = event.data;
 		console.log(msg);
-		if(msg == "test") {
-			colorCubeExample();
-		}
+		parsePointCloudMessage(msg);
 	}
 	ws.onclose = function() {
 		//
 	}
+}
+function parsePointCloudMessage(msg) {
+	var div = msg.split(",");
+	var header = div[0];
+	var data = div.slice(1);
+	var currentPoint = [[0], [0], [0], [1]];
+	var pc = [];
+	if(header == 2) {
+		for(var i=0; i<data.length; i+=2) {
+			pc.push([
+				[data[i]],
+				[data[i+1]],
+				[0],
+				[1]
+			]);
+		}
+	}
+	else if(header == 3) {
+		for(var i=0; i<data.length; i+=3) {
+			pc.push([
+				[data[i]],
+				[data[i+1]],
+				[data[i+2]],
+				[1]
+			]);
+		}
+	}
+	var color = randomColor();
+	var colorArray = [];
+	for(var i=0; i<pc.length; ++i) {
+		colorArray.push(color);
+	}
+	pointClouds.push(new rgbPointCloud(pc, colorArray));
+}
+function randomColor() {
+	var r = Math.floor(Math.random()*256).toString(16); r = ("0" + r).slice(-2);
+	var g = Math.floor(Math.random()*256).toString(16); g = ("0" + g).slice(-2);
+	var b = Math.floor(Math.random()*256).toString(16); b = ("0" + b).slice(-2);
+	var color = "#" + r + g + b;
+	return color;
 }
 
 ///////////////////////////////////////////
