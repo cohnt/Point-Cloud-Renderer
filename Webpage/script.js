@@ -481,6 +481,30 @@ function randomColor() {
 	var color = "#" + r + g + b;
 	return color;
 }
+function rgbToString(rgbArr) {
+	//rgbArr should be [r, g, b] where each value is 0-255 (not necessarily a whole number)
+	var r = ("0"+rgbArr[0].toString(16)).slice(-2);
+	var g = ("0"+rgbArr[1].toString(16)).slice(-2);
+	var b = ("0"+rgbArr[2].toString(16)).slice(-2);
+	var color = "#" + r + g + b;
+	return color;
+}
+function loadGradient() {
+	var start = [255, 0, 0]; //RGB
+	var end = [0, 0, 255];
+	var numScans = pointClouds.length;
+	var step = [-255/numScans, 0, 255/numScans];
+	var currentColor = start.slice();
+
+	for(var i=0; i<numScans; ++i) {
+		for(var j=0; j<pointClouds[i].colors.length; ++j) {
+			pointClouds[i].colors[j] = rgbToString(currentColor);
+		}
+		for(var j=0; j<3; ++j) {
+			currentColor[j] += step[j];
+		}
+	}
+}
 
 ///////////////////////////////////////////
 /// EXECUTED CODE
